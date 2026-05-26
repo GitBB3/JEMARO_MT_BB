@@ -3,12 +3,15 @@ from matplotlib.patches import RegularPolygon
 import networkx as nx
 import numpy as np
 
-def DisplayEnvironment(adjacency_matrix):
+from environment import Environment
+
+def DisplayEnvironment(env):
     """
     Display the environment.
     """
+    adjacency_matrix = env.adjacencyMat
     ## Creating a graph
-    G = nx.from_numpy_array(np.array(adjacency_matrix))
+    G = nx.from_numpy_array(adjacency_matrix)
     ## Optimizing the position of the hexagons
     pos = nx.spring_layout(G, k=1.5, iterations=150, seed=42) #k controling the optimal distance between nodes
     ## Computation of the size of hexagons so that they can really be adjacent on the figure
@@ -53,14 +56,16 @@ def DisplayEnvironment(adjacency_matrix):
     plt.show()
 
 if __name__ == "__main__":
-    adjacency_matrix = [
-        [0, 0, 0, 0, 0, 0, 0, 1],  # 0
-        [0, 0, 1, 0, 0, 0, 1, 0],  # 1
-        [0, 1, 0, 1, 0, 0, 0, 0],  # 2
-        [0, 0, 1, 0, 1, 0, 0, 0],  # 3
-        [0, 0, 0, 1, 0, 1, 0, 0],  # 4
-        [0, 0, 0, 0, 1, 0, 1, 1],  # 5
-        [0, 1, 0, 0, 0, 1, 0, 1],  # 6
-        [1, 0, 0, 0, 0, 1, 1, 0]   # 7
-    ]
-    DisplayEnvironment(adjacency_matrix)
+    # adjacency_matrix = [
+    #     [0, 0, 0, 0, 0, 0, 0, 1],  # 0
+    #     [0, 0, 1, 0, 0, 0, 1, 0],  # 1
+    #     [0, 1, 0, 1, 0, 0, 0, 0],  # 2
+    #     [0, 0, 1, 0, 1, 0, 0, 0],  # 3
+    #     [0, 0, 0, 1, 0, 1, 0, 0],  # 4
+    #     [0, 0, 0, 0, 1, 0, 1, 1],  # 5
+    #     [0, 1, 0, 0, 0, 1, 0, 1],  # 6
+    #     [1, 0, 0, 0, 0, 1, 1, 0]   # 7
+    # ]
+    env = Environment(np.zeros((6,6)))
+    env.env_generator()
+    DisplayEnvironment(env)
