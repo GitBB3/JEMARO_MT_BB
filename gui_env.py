@@ -56,16 +56,6 @@ def DisplayEnvironment(env):
     plt.show()
 
 if __name__ == "__main__":
-    # adjacency_matrix = [
-    #     [0, 0, 0, 0, 0, 0, 0, 1],  # 0
-    #     [0, 0, 1, 0, 0, 0, 1, 0],  # 1
-    #     [0, 1, 0, 1, 0, 0, 0, 0],  # 2
-    #     [0, 0, 1, 0, 1, 0, 0, 0],  # 3
-    #     [0, 0, 0, 1, 0, 1, 0, 0],  # 4
-    #     [0, 0, 0, 0, 1, 0, 1, 1],  # 5
-    #     [0, 1, 0, 0, 0, 1, 0, 1],  # 6
-    #     [1, 0, 0, 0, 0, 1, 1, 0]   # 7
-    # ]
     env = Environment(np.zeros((6,6)))
     env.env_generator()
     DisplayEnvironment(env)
