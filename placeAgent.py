@@ -9,11 +9,9 @@ class placeAgent():
         self.uncertaintyPheromone = 0.0
         self.entropyPheromone = 0.0
     
-    def aggregation(self, amount, type):
-        if type=="uncertainty":
-            self.uncertaintyPheromone += amount
-        elif type=="entropy":
-            self.entropyPheromone += amount
+    def aggregation(self, amount):
+        self.uncertaintyPheromone += amount[0]
+        self.entropyPheromone += amount[1]
     
     def evaporation(self):
         self.uncertaintyPheromone *= (1-self.evaporation_rate_u)
