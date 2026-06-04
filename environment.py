@@ -4,10 +4,10 @@ from placeAgent import placeAgent
 
 
 # For an hexagonal environment
-class Environment:
-    def __init__(self, adjacencyMat):
+class Environment: # TODO: check dependencies with pheromone class
+    def __init__(self, adjacencyMat, pheromone):
         self.adjacencyMat = adjacencyMat # adjacency matrix between the hexagonal cells of the environment grid
-        self.grid = [placeAgent(i,i) for i in range (len(adjacencyMat))] # environment hexagonal grid
+        self.grid = [placeAgent(i,pheromone) for i in range (len(adjacencyMat))] # environment hexagonal grid
     
     def env_generator(self):
         size = len(self.adjacencyMat)
