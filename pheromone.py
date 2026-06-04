@@ -9,7 +9,6 @@ class Pheromone:
     """
     def __init__(self, lst_semantics, lst_diffusion, lst_evaporation):
         semantics = []
-        levels = []
         diffusion = []
         evaporation = []
         dynamics = [] # identifier for every pair of dynamic pheromone with the same semantic
@@ -17,8 +16,6 @@ class Pheromone:
             if lst_semantics[1][i]:
                 semantics.append(lst_semantics[0][i] + "_short") # check si ça marche
                 semantics.append(lst_semantics[0][i] + "_long")
-                levels.append(0.0)
-                levels.append(0.0)
                 diffusion.append(lst_diffusion[i][0])
                 diffusion.append(lst_diffusion[i][1])
                 evaporation.append(lst_evaporation[i][0])
@@ -27,12 +24,10 @@ class Pheromone:
                 dynamics.append(i+1)
             else:
                 semantics.append(lst_semantics[0][i])
-                levels.append(0.0)
                 diffusion.append(lst_diffusion[i])
                 evaporation.append(lst_evaporation[i])
                 dynamics.append(0)
         self.semantics = semantics
-        self.levels = levels
         self.diffusion = diffusion
         self.evaporation = evaporation
         self.dynamics = dynamics
