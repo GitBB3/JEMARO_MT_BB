@@ -1,18 +1,14 @@
 class placeAgent():
-    def __init__(self, id_place, position, evaporation_rate_u, evaporation_rate_e, diffusion_rate_u, diffusion_rate_e):
+    def __init__(self, id_place, pheromone):
         self.id = id_place
         # self.position = position # not needed right? cause the position is only determined relatively to adjacency with other placeAgents
-        self.evaporation_rate_u = evaporation_rate_u
-        self.evaporation_rate_e = evaporation_rate_e
-        self.diffusion_rate_u = diffusion_rate_u
-        self.diffusion_rate_e = diffusion_rate_e
-        self.uncertaintyPheromone = 0.0
-        self.entropyPheromone = 0.0
+        self.pheromone = pheromone
+        self.pheromoneLevels = [0.0 for _ in range (len(pheromone.semantics))]
     
     def aggregation(self, amount):
-        self.uncertaintyPheromone += amount[0]
-        self.entropyPheromone += amount[1]
+        for i in range (len(amount)):
+            self.pheromoneLevels[i] += amount[i]
     
     def evaporation(self):
-        self.uncertaintyPheromone *= (1-self.evaporation_rate_u)
-        self.entropyPheromone *= (1-self.evaporation_rate_e)
+        for i in range (len(self.pheromoneLevels)):
+            self.pheromoneLevels[i] *= (1-self.pheromone.evaporation[i])
