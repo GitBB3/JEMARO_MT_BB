@@ -1,3 +1,6 @@
+import numpy as np
+
+
 def SelectGuidance(ag_ant):
     """
     Compare the guidance of the pheromone semantics which exist with different dynamics.
@@ -35,15 +38,24 @@ def SelectGuidance(ag_ant):
             guid_idx.append(i)
     return guid_idx # list of the pheromones providing better guidance (indexes in the pheromone list)
 
-def BalanceDirection(single_pheromone):
-    pass
+def BalanceDirection(unified_pheromone, param_balance):
+    sum_p = sum(unified_pheromone)
+    if sum_p == 0:
+        return [1/len(unified_pheromone) for _ in range (len(unified_pheromone))] # uniform probability if no neighbour is attractive
+    else:
+        weights = [ph/sum_p for ph in unified_pheromone]
+        sum_w = 0
+        for w in weights:
+            sum_w += np.exp(param_balance*w)
+        balanced_direction = [np.exp(param_balance*wt)/sum_w for wt in weights]
+        return balanced_direction
 
 def MomentumAddition(balanced_direction):
     pass
 
-def PheromoneDescent(ag_ant, params): #TODO: ag_ant is an important parameter and params should tuned then fixed
+def PheromoneDescent(ag_ant, params, param_balance=5.5): #TODO: ag_ant is an important parameter and params should tuned then fixed, also param_balance
     guidance = SelectGuidance(ag_ant)
     unified_pheromone = ag_ant.pheromone.unifyFunc(ag_ant, guidance, params) # TODO: is there a better place to scale the pheromone parameters?
-    balanced_direction = BalanceDirection(unified_pheromone)
+    balanced_direction = BalanceDirection(unified_pheromone, param_balance) # param_balance<4 favouring exploration and param_balance>5 favouring exploitation of pheromones
     momentum_direction = MomentumAddition(balanced_direction)
     return momentum_direction
