@@ -21,6 +21,9 @@ class ComInterface:
         pass
 
 class PathPlanner:
+    def __init__(self, type):
+        self.type = type
+    
     def PathPlan(self, memory_map):
         pass
 
@@ -32,9 +35,10 @@ class AgAnt: # So many "sub-classes" seems scary but let's hope it will help ada
     """
     Senses, analyzes, marks, moves accordingly and communicates with the others.
     """
-    def __init__(self, id_ant, id_place):
+    def __init__(self, id_ant, id_place, pheromone):
         self.id = id_ant
         self.position = id_place
+        self.pheromone = pheromone
         self.vision = VisionComponent()
         self.memory = Environment()
         self.data_manager = DataManager()

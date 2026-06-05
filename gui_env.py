@@ -3,6 +3,7 @@ from matplotlib.patches import RegularPolygon
 import networkx as nx
 import numpy as np
 
+from pheromone import Pheromone
 from environment import Environment
 
 def DisplayEnvironment(env):
@@ -56,6 +57,22 @@ def DisplayEnvironment(env):
     plt.show()
 
 if __name__ == "__main__":
-    env = Environment(np.zeros((6,6)))
+    lst_semantics = [["RTarget", "GTarget", "GNest", "RThreat"], [1, 1, 0, 0]]
+    lst_diffusion = [[0.9, 0.1], [0.8, 0.2], 0.3, 0.3]
+    lst_evaporation = [[0.1, 0.1], [0.1, 0.1], 0.1, 0.1]
+    params = [1.5, 1.0, 0.01, 0.8, 1.0, 1.2, 2.5] # TODO:possibly probable values, to be tuned
+    def unifyFunc(ag_ant, guidance, params, Dist=0): # TODO: The computation of Dist should be addressed
+        neighbourhood = [i for i in range (len(ag_ant.memory.adjacencyMat[ag_ant.position])) if ag_ant.memory.adjacencyMat[ag_ant.position][i]]
+        unified_pheromone = []
+        for neighbour in neighbourhood:
+            RTarget = ag_ant.memory.grid[neighbour].pheromoneLevels[guidance[0]]
+            GTarget = ag_ant.memory.grid[neighbour].pheromoneLevels[guidance[1]]
+            GNest = ag_ant.memory.grid[neighbour].pheromoneLevels[4]
+            RThreat = ag_ant.memory.grid[neighbour].pheromoneLevels[5]
+            unified_pheromone.append((params[0]*RTarget + params[1]*GTarget + params[2]) / ((params[3]*GNest + params[2])*((Dist + params[4])**(params[5] + params[6]*(RThreat+1))) + params[2]))
+        return unified_pheromone
+
+    pheromone_example = Pheromone(lst_semantics, lst_diffusion, lst_evaporation, unifyFunc)
+    env = Environment(np.zeros((6,6)), pheromone_example)
     env.env_generator()
     DisplayEnvironment(env)

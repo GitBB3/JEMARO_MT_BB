@@ -35,19 +35,15 @@ def SelectGuidance(ag_ant):
             guid_idx.append(i)
     return guid_idx # list of the pheromones providing better guidance (indexes in the pheromone list)
 
-def MixPheromones(pheromone_memory, guidance):
-    pass
-
 def BalanceDirection(single_pheromone):
     pass
 
 def MomentumAddition(balanced_direction):
     pass
 
-def PheromoneDescent(ag_ant, pheromone_memory):
-    pheromone_memory = ag_ant.memory
-    guidance = SelectGuidance(pheromone_memory)
-    single_pheromone = MixPheromones(pheromone_memory, guidance)
-    balanced_direction = BalanceDirection(single_pheromone)
+def PheromoneDescent(ag_ant, params): #TODO: ag_ant is an important parameter and params should tuned then fixed
+    guidance = SelectGuidance(ag_ant)
+    unified_pheromone = ag_ant.pheromone.unifyFunc(ag_ant, guidance, params) # TODO: is there a better place to scale the pheromone parameters?
+    balanced_direction = BalanceDirection(unified_pheromone)
     momentum_direction = MomentumAddition(balanced_direction)
     return momentum_direction

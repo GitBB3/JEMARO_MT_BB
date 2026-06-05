@@ -7,7 +7,7 @@ class Pheromone:
     lst_diffusion: list of the diffusion rates for every pheromone semantic of lst_semantic list. If the semantic has several dynamics, the several values are in a list.
     lst_evaporation: analog list for the evaporation rate.
     """
-    def __init__(self, lst_semantics, lst_diffusion, lst_evaporation):
+    def __init__(self, lst_semantics, lst_diffusion, lst_evaporation, unifyFunc):
         semantics = []
         diffusion = []
         evaporation = []
@@ -31,6 +31,7 @@ class Pheromone:
         self.diffusion = diffusion
         self.evaporation = evaporation
         self.dynamics = dynamics
+        self.unify = unifyFunc
 
 
 # lst_semantics = [["RTarget", "GTarget", "GNest", "RThreat"], [1, 1, 0, 0]]
