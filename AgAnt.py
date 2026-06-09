@@ -1,4 +1,5 @@
 from environment import Environment
+from pathPlanning import PheromoneDescent
 
 class VisionComponent:
     """
@@ -24,8 +25,9 @@ class PathPlanner:
     def __init__(self, type):
         self.type = type
     
-    def PathPlan(self, memory_map):
-        pass
+    def PathPlan(self, ag_ant, params):
+        if self.type == "pheromone_descent":
+            PheromoneDescent(ag_ant, params)
 
 # class Navigation:
 #     def goto(self, destination):
@@ -35,15 +37,16 @@ class AgAnt: # So many "sub-classes" seems scary but let's hope it will help ada
     """
     Senses, analyzes, marks, moves accordingly and communicates with the others.
     """
-    def __init__(self, id_ant, id_place, pheromone):
+    def __init__(self, id_ant, id_place, pheromone, planner_type):
         self.id = id_ant
         self.position = id_place
+        self.position_historic = id_place
         self.pheromone = pheromone
         self.vision = VisionComponent()
         self.memory = Environment()
         self.data_manager = DataManager()
         self.interface = ComInterface()
-        self.path_planner = PathPlanner()
+        self.path_planner = PathPlanner(planner_type)
         # self.navigation = Navigation()
 
     def deposit(self, amount):

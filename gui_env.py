@@ -61,8 +61,7 @@ if __name__ == "__main__":
     lst_diffusion = [[0.9, 0.1], [0.8, 0.2], 0.3, 0.3]
     lst_evaporation = [[0.1, 0.1], [0.1, 0.1], 0.1, 0.1]
     params = [1.5, 1.0, 0.01, 0.8, 1.0, 1.2, 2.5] # TODO:possibly probable values, to be tuned
-    def unifyFunc(ag_ant, guidance, params, Dist=0): # TODO: The computation of Dist should be addressed
-        neighbourhood = [i for i in range (len(ag_ant.memory.adjacencyMat[ag_ant.position])) if ag_ant.memory.adjacencyMat[ag_ant.position][i]]
+    def unifyFunc(ag_ant, neighbourhood, guidance, params, Dist=0): # TODO: The computation of Dist should be addressed
         unified_pheromone = []
         for neighbour in neighbourhood:
             RTarget = ag_ant.memory.grid[neighbour].pheromoneLevels[guidance[0]]
