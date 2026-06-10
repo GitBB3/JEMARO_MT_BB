@@ -74,4 +74,5 @@ if __name__ == "__main__":
     pheromone_example = Pheromone(lst_semantics, lst_diffusion, lst_evaporation, unifyFunc)
     env = Environment(np.zeros((6,6)), pheromone_example)
     env.env_generator()
+    # change this to have only one object Experiment() and then DisplayEnvironment with the result of the experiment (try to be able to display the results/evolution of the experiment several times)
     DisplayEnvironment(env)

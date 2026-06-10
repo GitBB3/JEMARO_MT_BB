@@ -1,0 +1,28 @@
+name: Ant Stigmergy CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pulll_request:
+    branches: [ main, master ]
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out repository code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install numpy pytest
+    
+    - name: Run pytest
+      run: python -m pytest

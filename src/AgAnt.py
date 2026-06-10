@@ -13,12 +13,17 @@ class VisionComponent:
         return self.damage_map[id_place]
 
 class DataManager:
-    def MergeData(self, ad_hoc_info):
+    def MergeData(self, ad_hoc_info): # Dummy component could just generate a slight modification of the current memory. 
         pass
 
 class ComInterface:
     # could determine the area of a placeAgent as the largest surface so that two robots located in two adjacent placeAgents are at communication distance
-    def get_news(self):
+    def __init__(self, ag_ant):
+        self.last_updates = [f"{ag_ant.id}_init"] # list of the ids of the updates received recently by the ant. Every new update received by a same robot or update received by a nex robot should be updating this list.
+
+    def get_news(self): # TODO: Dummy component could just return a boolean (to be defined)
+        # If there is another agent close to it
+        # If the other agent has some modifications that # WAIT WE NEED A REAL ALGORITHM HERE FOR MANET # Or just dummy for now
         pass
 
 class PathPlanner:
@@ -27,7 +32,7 @@ class PathPlanner:
     
     def PathPlan(self, ag_ant, params):
         if self.type == "pheromone_descent":
-            PheromoneDescent(ag_ant, params)
+            return PheromoneDescent(ag_ant, params)
 
 # class Navigation:
 #     def goto(self, destination):
@@ -60,11 +65,11 @@ class AgAnt: # So many "sub-classes" seems scary but let's hope it will help ada
     def NavigationGoTo(self, destination): # dummy component
         self.position = destination
 
-    def step(self, env):
+    def step(self, env, params):
         image_recognition = self.vision.ScreenPlace(env) # dummy component OK
         new_pheromone = self.PheromoneGenerate(image_recognition) # dummy component adapted to the Vision Component OK
         self.deposit(new_pheromone) # OK
-        ad_hoc_info = self.interface.get_news() # TODO
-        self.data_manager.MergeData(ad_hoc_info, self.memory) # TODO
-        id_destination = self.path_planner.PathPlan(self.memory) # TODO = the part from the paper
+        ad_hoc_info = self.interface.get_news() # TODO dummy = just read the memory of the other agants in the communication perimeter
+        self.data_manager.MergeData(ad_hoc_info, self.memory) # TODO compute a weighted average of the 2 ?
+        id_destination = self.path_planner.PathPlan(self, params) # OK
         self.NavigationGoTo(id_destination) # dummy implementation without real dynamic OK

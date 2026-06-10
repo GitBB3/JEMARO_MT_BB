@@ -20,7 +20,6 @@ def SelectGuidance(ag_ant, neighbourhood): # neighbourhood could be computed in 
         return guidance_value
 
     pheromone_memory = ag_ant.memory
-    adj_memory = pheromone_memory.adjacencyMat
     grid_memory = pheromone_memory.grid
     pheromone = ag_ant.pheromone
     dynamics = pheromone.dynamics
