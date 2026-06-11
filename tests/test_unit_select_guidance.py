@@ -27,7 +27,7 @@ class MockAnt:
 ## Tests ##
 ###########
 
-def test_select_guidance_no_bi_dynamics():
+def test_UNIT_select_guidance_no_bi_dynamics():
     """
     Check if a pheromone semantic with only one dynamic is added in the list of pheromones.
     The id of every pheromone semantic whose dynamic is "False" should be in the result of the function "SelectGuidance".
@@ -42,7 +42,7 @@ def test_select_guidance_no_bi_dynamics():
     guid_idx = SelectGuidance(ag_ant, neighbourhood)
     assert guid_idx == [0, 1, 2]
 
-def test_select_guidance_null_levels():
+def test_UNIT_select_guidance_null_levels():
     """
     Check that a grid place with null level of pheromones and one double dynamic semantic selects the long_range dynamic.
     """
@@ -57,7 +57,7 @@ def test_select_guidance_null_levels():
     guid_idx = SelectGuidance(ag_ant, neighbourhood)
     assert guid_idx == [1]
 
-def test_select_guidance_bidynamics_short():
+def test_UNIT_select_guidance_bidynamics_short():
     """
     Check that a grid place with more short range pheromone guidance will select the short range pheromone.
     """
@@ -72,7 +72,7 @@ def test_select_guidance_bidynamics_short():
     guid_idx = SelectGuidance(ag_ant, neighbourhood)
     assert guid_idx == [0]
 
-def test_select_guidance_bidynamics_long():
+def test_UNIT_select_guidance_bidynamics_long():
     """
     Check that a grid place with more short range pheromone guidance will select the short range pheromone.
     """
@@ -87,7 +87,7 @@ def test_select_guidance_bidynamics_long():
     guid_idx = SelectGuidance(ag_ant, neighbourhood)
     assert guid_idx == [1]
 
-def test_select_guidance_several_unidynamic():
+def test_UNIT_select_guidance_several_unidynamic():
     """
     Check that unidynamic semantics are considered as such.
     """
@@ -102,7 +102,7 @@ def test_select_guidance_several_unidynamic():
     guid_idx = SelectGuidance(ag_ant, neighbourhood)
     assert guid_idx == [0, 1, 2]
 
-def test_select_guidance_combination():
+def test_UNIT_select_guidance_combination():
     """
     Check.
     """

@@ -37,14 +37,13 @@ def SelectGuidance(ag_ant, neighbourhood): # neighbourhood could be computed in 
 
 def BalanceDirection(unified_pheromone, param_balance):
     sum_p = sum(unified_pheromone)
-    if sum_p == 0:
+    if sum_p == 0 or param_balance == 0:
         return [1/len(unified_pheromone) for _ in range (len(unified_pheromone))] # uniform probability if no neighbour is attractive
     else:
-        weights = [ph/sum_p for ph in unified_pheromone]
-        sum_w = 0
-        for w in weights:
-            sum_w += np.exp(param_balance*w)
-        balanced_direction = [np.exp(param_balance*wt)/sum_w for wt in weights]
+        weights = np.array([ph/sum_p for ph in unified_pheromone])
+        balanced_weights = param_balance * weights
+        exp_weights = np.exp(balanced_weights - np.max(balanced_weights))
+        balanced_direction = (exp_weights / np.sum(exp_weights)).tolist()
         return balanced_direction
 
 def MomentumAddition(balanced_direction, ag_ant, neighbourhood, momentum_params): # is not an exponential weight
