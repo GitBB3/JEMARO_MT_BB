@@ -6,12 +6,45 @@
 Simulation Study of Ant Stigmergy for Multi-Agent Post-disaster remapping of Uncertain Environments documentation
 =================================================================================================================
 
-Add your content using ``reStructuredText`` syntax. See the
-`reStructuredText <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_
-documentation for details.
-
+Welcome to the documentation. 
+(Work in progress...)
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
+Documentation of the code
+==============================================
+
+
+Classes:
++++++++++
+
+.. automodule:: src.placeAgent
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: src.pheromone
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: src.AgAnt
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: src.environment
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Method:
++++++++
+
+.. automodule:: src.pathPlanning
+   :members:
+   :undoc-members:
+   :show-inheritance:
