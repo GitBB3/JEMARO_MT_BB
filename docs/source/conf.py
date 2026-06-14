@@ -26,3 +26,13 @@ exclude_patterns = []
 
 html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
+
+html_show_sourcelink = False
+
+html_context = {
+    "display_github": True,
+    "github_user": "GitBB3",
+    "github_repo": "JEMARO_MT_BB",
+    "github_version": "main",
+    "conf_py_path": "/docs/source/",
+}
