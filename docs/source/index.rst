@@ -48,3 +48,20 @@ Method:
    :members:
    :undoc-members:
    :show-inheritance:
+
+Tests:
++++++++++
+
+SelectGuidance Unit Testing:
+
+.. automodule:: tests.test_unit_select_guidance
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+BalanceDirectionWithMomentum Unit Testing:
+
+.. automodule:: tests.test_unit_momentum_addition
+   :members:
+   :undoc-members:
+   :show-inheritance:

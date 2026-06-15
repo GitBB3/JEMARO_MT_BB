@@ -1,5 +1,5 @@
 import pytest
-from src.pathPlanning import SelectGuidance, BalanceDirection, MomentumAddition
+from src.pathPlanning import SelectGuidance
 
 ###########
 ## Mocks ##

@@ -3,6 +3,14 @@ import numpy as np
 def SelectGuidance(ag_ant, neighbourhood): # neighbourhood could be computed in the function but this way we compute it only once
     """
     Compare the guidance of the pheromone semantics which exist with different dynamics.
+    
+    :param ag_ant: Object of the AgAnt class, this ag_ant is the one moving.
+    :type ag_ant: class AgAnt
+    :param neighbourhood: List of index of the placeAgents connected to the placeAgent of the current position.
+    :type neighbourhood: list[float]
+
+    :returns: A list of the pheromone dynamics that will offer a better guidance for the Pheromone Descent algorithm.
+    :rtype: list[float]
     """
     def Guidance(idx_pheromone, position, neighbourhood, grid_memory):
         fi_s = [grid_memory[i].pheromoneLevels[idx_pheromone] for i in neighbourhood] # total amount of pheromones in the neighbourhood of the current position
@@ -35,35 +43,31 @@ def SelectGuidance(ag_ant, neighbourhood): # neighbourhood could be computed in 
             guid_idx.append(i)
     return guid_idx # list of the pheromones providing better guidance (indexes in the pheromone list)
 
-def BalanceDirection(unified_pheromone, param_balance):
-    sum_p = sum(unified_pheromone)
-    if sum_p == 0 or param_balance == 0:
-        return [1/len(unified_pheromone) for _ in range (len(unified_pheromone))] # uniform probability if no neighbour is attractive
-    else:
-        weights = np.array([ph/sum_p for ph in unified_pheromone])
-        balanced_weights = param_balance * weights
-        exp_weights = np.exp(balanced_weights - np.max(balanced_weights))
-        balanced_direction = (exp_weights / np.sum(exp_weights)).tolist()
-        return balanced_direction
-
-def MomentumAddition(balanced_direction, ag_ant, neighbourhood, momentum_params): # is not an exponential weight
-    # The grid is only defined by the adjacency map, so anisotropies might be hard to define. 
-    # We may still lower the probability of U-turns by adding lowering weights to the the previous position and the ones connected to this placeAgent.
-    # 
-    momentum_direction = balanced_direction
+def BalanceDirectionWithMomentum(unified_pheromone, ag_ant, neighbourhood, param_balance, momentum_params):
     adj_memory = ag_ant.memory.adjacencyMat
-    pos = ag_ant.position
     # read the previous position
     pos_past = ag_ant.position_historic
     # find the neighbours of the previous position
-    neighbourhood_past = [i for i in range (len(adj_memory[pos_past])) if adj_memory[pos_past][i]]
-    # compute the weight to discriminate the positions which may have been visited in the last steps
+    if pos_past is None:
+        neighbourhood_past = []
+    else:
+        neighbourhood_past = [i for i in range (len(adj_memory[pos_past])) if adj_memory[pos_past][i]]
+    
+    sum_p = sum(unified_pheromone)
+    if sum_p == 0 or param_balance == 0:
+        balanced_weights = np.zeros(len(unified_pheromone)) # uniform probability if no neighbour is attractive
+    else:
+        balanced_weights = np.array([param_balance*ph/sum_p for ph in unified_pheromone])
+    
+    exp_weights = np.exp(balanced_weights - np.max(balanced_weights))
     for i in range (len(neighbourhood)):
         if neighbourhood[i] == pos_past:
-            momentum_direction[i] *= momentum_params[0]
+            exp_weights[i] *= momentum_params[0]
         elif neighbourhood[i] in neighbourhood_past:
-            momentum_direction[i] *= momentum_params[1]
-    return momentum_direction
+            exp_weights[i] *= momentum_params[1]
+    balanced_direction = (exp_weights / np.sum(exp_weights)).tolist()
+
+    return balanced_direction
     
 
 # def PheromoneDescent(ag_ant, params, param_balance=5.5, momentum_params=[0.1,0.5]): #TODO: ag_ant is an important parameter and params should tuned then fixed
@@ -71,8 +75,7 @@ def PheromoneDescent(ag_ant, params):
     neighbourhood = [i for i in range (len(ag_ant.memory.adjacencyMat[ag_ant.position])) if ag_ant.memory.adjacencyMat[ag_ant.position][i]]
     guidance = SelectGuidance(ag_ant, neighbourhood)
     unified_pheromone = ag_ant.pheromone.unifyFunc(ag_ant, neighbourhood, guidance, params[:-3]) # TODO: is there a better place to scale the pheromone parameters?
-    balanced_direction = BalanceDirection(unified_pheromone, params[-3]) # param_balance<4 favouring exploration and param_balance>5 favouring exploitation of pheromones
-    momentum_direction = MomentumAddition(balanced_direction, ag_ant, neighbourhood, params[-2:])
-    idx_max = momentum_direction.index(max(momentum_direction))
+    momentum_direction = BalanceDirectionWithMomentum(unified_pheromone, ag_ant, neighbourhood, params[-3], params[-2:]) # param_balance<4 favouring exploration and param_balance>5 favouring exploitation of pheromones
+    idx_max = momentum_direction.index(max(momentum_direction)) # TODO: CHANGE CA CE SONT DES PROBAS CE NEST PAS UN MAX!!!
     id_destination = neighbourhood[idx_max]
     return id_destination
