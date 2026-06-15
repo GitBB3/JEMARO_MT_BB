@@ -1,5 +1,5 @@
-from environment import Environment
-from pathPlanning import PheromoneDescent
+from src.environment import Environment
+from src.pathPlanning import PheromoneDescent
 
 class VisionComponent:
     """
@@ -45,7 +45,7 @@ class AgAnt: # So many "sub-classes" seems scary but let's hope it will help ada
     def __init__(self, id_ant, id_place, pheromone, planner_type):
         self.id = id_ant
         self.position = id_place
-        self.position_historic = id_place
+        self.position_historic = None
         self.pheromone = pheromone
         self.vision = VisionComponent()
         self.memory = Environment()

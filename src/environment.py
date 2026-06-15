@@ -1,6 +1,6 @@
 import numpy as np
 
-from placeAgent import placeAgent
+from src.placeAgent import placeAgent
 
 
 # For an hexagonal environment

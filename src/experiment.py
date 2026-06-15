@@ -1,6 +1,6 @@
-from environment import Environment
-from AgAnt import AgAnt
-from pheromone import Pheromone
+from src.environment import Environment
+from src.AgAnt import AgAnt
+from src.pheromone import Pheromone
 
 class Experiment:
     def __init__(self, adjacency_matrix, agants_lst, lst_semantics, lst_diffusion, lst_evaporation, unifyFunc, planner_type):

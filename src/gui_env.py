@@ -3,8 +3,8 @@ from matplotlib.patches import RegularPolygon
 import networkx as nx
 import numpy as np
 
-from pheromone import Pheromone
-from environment import Environment
+from src.pheromone import Pheromone
+from src.environment import Environment
 
 def DisplayEnvironment(env):
     """
