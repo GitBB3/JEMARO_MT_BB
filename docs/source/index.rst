@@ -54,14 +54,21 @@ Tests:
 
 SelectGuidance Unit Testing:
 
-.. automodule:: tests.test_unit_select_guidance
+.. automodule:: tests.pathPlanning.test_unit_select_guidance
    :members:
    :undoc-members:
    :show-inheritance:
 
 BalanceDirectionWithMomentum Unit Testing:
 
-.. automodule:: tests.test_unit_momentum_addition
+.. automodule:: tests.pathPlanning.test_unit_balance_and_momentum
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Component integration Testing - Path Planning:
+
+.. automodule:: tests.pathPlanning.test_integration_path_planning
    :members:
    :undoc-members:
    :show-inheritance:
