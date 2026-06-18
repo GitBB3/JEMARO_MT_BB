@@ -33,7 +33,7 @@ def SelectGuidance(ag_ant, neighbourhood): # neighbourhood could be computed in 
         fi_s = [grid_memory[i].pheromoneLevels[idx_pheromone] for i in neighbourhood] # total amount of pheromones in the neighbourhood of the current position
         fi_s.append(grid_memory[position].pheromoneLevels[idx_pheromone])
         sum_fi = sum(fi_s)
-        if sum_fi==0:
+        if sum_fi < 1e-6: # to avoid inequalities with a strict equality condition "=="
             return 0
         else:
             guidance_value = grid_memory[position].pheromoneLevels[idx_pheromone] / sum_fi - 1/(1+len(neighbourhood))
@@ -98,11 +98,14 @@ def BalanceDirectionWithMomentum(unified_pheromone, ag_ant, neighbourhood, param
         balanced_weights = np.array([param_balance*ph/sum_p for ph in unified_pheromone])
     
     exp_weights = np.exp(balanced_weights - np.max(balanced_weights))
-    for i in range (len(neighbourhood)):
-        if neighbourhood[i] == pos_past:
-            exp_weights[i] *= momentum_params[0]
-        elif neighbourhood[i] in neighbourhood_past:
-            exp_weights[i] *= momentum_params[1]
+    if len(neighbourhood) == 1:
+        return [1]        
+    elif momentum_params[0] !=0 or momentum_params[1] != 0:
+        for i in range (len(neighbourhood)):
+            if neighbourhood[i] == pos_past:
+                exp_weights[i] *= momentum_params[0]
+            elif neighbourhood[i] in neighbourhood_past:
+                exp_weights[i] *= momentum_params[1]
     balanced_direction = (exp_weights / np.sum(exp_weights)).tolist()
 
     return balanced_direction
@@ -122,8 +125,11 @@ def PheromoneDescent(ag_ant, params):
     :returns: Index of the placeAgent where the AgAnt should go next.
     """
     neighbourhood = [i for i in range (len(ag_ant.memory.adjacencyMat[ag_ant.position])) if ag_ant.memory.adjacencyMat[ag_ant.position][i]] # subset of the ensemble of placeAgent positions.
-    guidance = SelectGuidance(ag_ant, neighbourhood) # subset of the ensemble of pheromone dynamics.
-    unified_pheromone = ag_ant.pheromone.unifyFunc(ag_ant, neighbourhood, guidance, params[:-3]) # returns a list of the values of the unified pheromone in every placeAgent of the neighbourhood, computed with the pheromones dynamics giving better guidance.
-    momentum_direction = BalanceDirectionWithMomentum(unified_pheromone, ag_ant, neighbourhood, params[-3], params[-2:]) # list of probabilities to go to each placeAgent of the neighbourhood.
-    id_destination = int(np.random.choice(neighbourhood, p=momentum_direction)) # choice of the next position weighted by the previous probabilities.
-    return id_destination
+    if not len(neighbourhood):
+        return ag_ant.position
+    else:
+        guidance = SelectGuidance(ag_ant, neighbourhood) # subset of the ensemble of pheromone dynamics.
+        unified_pheromone = ag_ant.pheromone.unifyFunc(ag_ant, neighbourhood, guidance, params[:-3]) # returns a list of the values of the unified pheromone in every placeAgent of the neighbourhood, computed with the pheromones dynamics giving better guidance.
+        momentum_direction = BalanceDirectionWithMomentum(unified_pheromone, ag_ant, neighbourhood, params[-3], params[-2:]) # list of probabilities to go to each placeAgent of the neighbourhood.
+        id_destination = int(np.random.choice(neighbourhood, p=momentum_direction)) # choice of the next position weighted by the previous probabilities.
+        return id_destination

@@ -27,9 +27,9 @@ class MockAnt:
 ###########
 
 @pytest.mark.parametrize("momentum_params", [
-    ([1, 1]), # no penality on the U-turns
-    ([0.5, 0.7]), # penality on U-turns and places potentially already visited
-    ([0.5, 1]), # penality only on U-turns
+    ([1, 1]), # no penalty on the U-turns
+    ([0.5, 0.7]), # penalty on U-turns and places potentially already visited
+    ([0.5, 1]), # penalty only on U-turns
 ])
 def test_UNIT_balance_and_momentum_initial_step(momentum_params):
     """
