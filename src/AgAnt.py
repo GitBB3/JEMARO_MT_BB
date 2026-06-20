@@ -42,15 +42,15 @@ class AgAnt: # So many "sub-classes" seems scary but let's hope it will help ada
     """
     Senses, analyzes, marks, moves accordingly and communicates with the others.
     """
-    def __init__(self, id_ant, id_place, pheromone, planner_type):
+    def __init__(self, id_ant, id_place, pheromone, planner_type, env):
         self.id = id_ant
         self.position = id_place
         self.position_historic = None
         self.pheromone = pheromone
-        self.vision = VisionComponent()
-        self.memory = Environment()
+        self.vision = VisionComponent(0, 0)
+        self.memory = env
         self.data_manager = DataManager()
-        self.interface = ComInterface()
+        self.interface = ComInterface(self)
         self.path_planner = PathPlanner(planner_type)
         # self.navigation = Navigation()
 
