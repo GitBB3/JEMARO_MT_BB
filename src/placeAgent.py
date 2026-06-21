@@ -5,6 +5,7 @@ class placeAgent():
         self.pheromone = pheromone
         self.pheromoneLevels = [0.0 for _ in range (len(pheromone.semantics))]
         self.type = type
+        self.timestamp = 0
     
     def aggregation(self, amount):
         for i in range (len(amount)):
@@ -13,3 +14,6 @@ class placeAgent():
     def evaporation(self):
         for i in range (len(self.pheromoneLevels)):
             self.pheromoneLevels[i] *= (1-self.pheromone.evaporation[i])
+
+    def TimeUpdate(self, time):
+        self.timestamp = time

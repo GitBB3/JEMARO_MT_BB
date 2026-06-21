@@ -1,5 +1,6 @@
 from src.environment import Environment
 from src.pathPlanning import PheromoneDescent
+from src.Comunication import GossipAndMerge
 
 class VisionComponent:
     """
@@ -10,21 +11,17 @@ class VisionComponent:
         self.damage_map = damage_map # a map of the real damages in the real environment. Format: [modif_coeff for i in range (len(env.grid))] where modif_coeff is a % between 0 and 1 of how different the place is from before the memory map
 
     def ScreenPlace(self, id_place):
+        # Calcule le neighbourhood
+        # return les connaissances dans le neighbourhood
         return self.damage_map[id_place]
 
-class DataManager:
-    def MergeData(self, ad_hoc_info): # Dummy component could just generate a slight modification of the current memory. 
-        pass
+class ComInterface: # could determine the area of a placeAgent as the largest surface so that two robots located in two adjacent placeAgents are at communication distance
+    def __init__(self, type):
+        self.type = type
 
-class ComInterface:
-    # could determine the area of a placeAgent as the largest surface so that two robots located in two adjacent placeAgents are at communication distance
-    def __init__(self, ag_ant):
-        self.last_updates = [f"{ag_ant.id}_init"] # list of the ids of the updates received recently by the ant. Every new update received by a same robot or update received by a nex robot should be updating this list.
-
-    def get_news(self): # TODO: Dummy component could just return a boolean (to be defined)
-        # If there is another agent close to it
-        # If the other agent has some modifications that # WAIT WE NEED A REAL ALGORITHM HERE FOR MANET # Or just dummy for now
-        pass
+    def Communicate(self, ag_ant, lst_agants): ## Access to the data of the other robots might be fake
+        if self.type == "gossip":
+            return GossipAndMerge(ag_ant, lst_agants)
 
 class PathPlanner:
     def __init__(self, type):
@@ -42,34 +39,25 @@ class AgAnt: # So many "sub-classes" seems scary but let's hope it will help ada
     """
     Senses, analyzes, marks, moves accordingly and communicates with the others.
     """
-    def __init__(self, id_ant, id_place, pheromone, planner_type, env):
+    def __init__(self, id_ant, id_place, pheromone, planner_type, com_type, env):
         self.id = id_ant
         self.position = id_place
         self.position_historic = None
         self.pheromone = pheromone
-        self.vision = VisionComponent(0, 0)
         self.memory = env
-        self.data_manager = DataManager()
-        self.interface = ComInterface(self)
         self.path_planner = PathPlanner(planner_type)
-        # self.navigation = Navigation()
+        self.communication_strategy = ComInterface(com_type)
 
-    def deposit(self, amount):
+    def deposit(self, amount, time):
         self.memory.grid[self.position].aggregation(amount)
-        # Watch out, it's spreading on its own memory because it's only digital pheromones.
+        self.memory.grid[self.position].TimeUpdate(time)
 
-    def PheromoneGenerate(self, image_recognition): # adapt to the input received from the VisionComponent
-        new_ph = [1, image_recognition*10] # uncertainty pheromone and entropy pheromone (should diffuse a lot but not evaporate because it should stay), maybe add a damage pheromone which does not move at all
-        return new_ph
+    def AntStep(self, env, lst_agants, params): #lst_agants should not exist to have a real decentralized control (this is equivalent to a comunication device)
+        ## Scan the environment & Spread pheromones
+        ## Share data with the neighbours
+        self.communication_strategy.Communicate(self, lst_agants)
 
-    def NavigationGoTo(self, destination): # dummy component
-        self.position = destination
-
-    def step(self, env, params):
-        image_recognition = self.vision.ScreenPlace(env) # dummy component OK
-        new_pheromone = self.PheromoneGenerate(image_recognition) # dummy component adapted to the Vision Component OK
-        self.deposit(new_pheromone) # OK
-        ad_hoc_info = self.interface.get_news() # TODO dummy = just read the memory of the other agants in the communication perimeter
-        self.data_manager.MergeData(ad_hoc_info, self.memory) # TODO compute a weighted average of the 2 ?
-        id_destination = self.path_planner.PathPlan(self, params) # OK
-        self.NavigationGoTo(id_destination) # dummy implementation without real dynamic OK
+        ## Search for next best position
+        id_destination = self.path_planner.PathPlan(self, params)
+        
+        ## Move to next position
