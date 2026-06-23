@@ -1,4 +1,4 @@
 sphinx-rtd-theme==1.3.0
 numpy
 pytest
-scipy.sparse.csgraph
+scipy
