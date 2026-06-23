@@ -5,10 +5,11 @@ from src.placeAgent import placeAgent
 
 # For an hexagonal environment
 class Environment:
-    def __init__(self, adjacencyMat, pheromone):
+    def __init__(self, adjacencyMat, pheromone, nest_position):
         self.adjacencyMat = adjacencyMat # adjacency matrix between the hexagonal cells of the environment grid
         self.grid = [placeAgent(i, pheromone, "basic") for i in range (len(adjacencyMat))] # environment hexagonal grid
-    
+        self.nest_position = nest_position
+
     def env_generator(self):
         size = len(self.adjacencyMat)
         M = np.random.randint(0, 2, size=(size, size)) # random matrix full of 0 and 2
@@ -70,14 +71,32 @@ class Environment:
 
     
     def diffusion(self):
-        diff_map = [[0.0, 0.0] for i in range (len(self.grid))]
-        for a in self.grid:
-            idx_neighbours = [idx for idx, adjacency in enumerate(self.adjacencyMat[a.id]) if adjacency]
-            diff_u = a.uncertaintyPheromone * a.diffusion_rate_u / 6 # Diffusion on an hexagonal grid without border effects (open environment)
-            diff_e = a.entropyPheromone * a.diffusion_rate_e / 6
-            for idx in idx_neighbours:
-                diff_map[idx][0] += diff_u
-                diff_map[idx][1] += diff_e
-        for a in self.grid:
-            a.uncertaintyPheromone = a.uncertaintyPheromone*(1 - a.diffusion_rate_u) + diff_map[a.id][0]
-            a.entropyPheromone = a.entropyPheromone*(1 - a.diffusion_rate_e) + diff_map[a.id][1]
+        """
+        Diffuse.
+        """
+        nb_places = len(self.grid)
+        nb_phero_types = len(self.grid[0].pheromone.semantics)
+
+        diff_map = [[0.0] * nb_phero_types for _ in range(nb_places)]
+        for place in self.grid:
+            idx_neighbours = [idx for idx, adjacency in enumerate(self.adjacencyMat[place.id]) if adjacency]
+            nb_neighbours = len(idx_neighbours)
+            
+            if nb_neighbours == 0:
+                continue
+            for phero_idx in range(nb_phero_types):
+                current_level = place.pheromoneLevels[phero_idx]
+                diff_rate = self.grid[0].pheromone.diffusion[phero_idx]
+
+                diff_amount = (current_level * diff_rate) / nb_neighbours
+
+                for idx_neigh in idx_neighbours:
+                    diff_map[idx_neigh][phero_idx] += diff_amount
+        for place in self.grid:
+            for phero_idx in range(nb_phero_types):
+                diff_rate = self.grid[0].pheromone.diffusion[phero_idx]
+                place.pheromoneLevels[phero_idx] = (place.pheromoneLevels[phero_idx] * (1.0 - diff_rate) + diff_map[place.id][phero_idx])
+        
+    def env_evaporation(self):
+        for place in self.grid:
+            place.evaporation()

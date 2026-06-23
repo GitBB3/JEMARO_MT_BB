@@ -54,15 +54,16 @@ def test_UNIT_comunication_newest_data_chosen():
     grid2 = [placeAgent(0, ph, "basic")]
     grid2[0].pheromoneLevels = [100]
     grid2[0].timestamp = 100
+    grid2[0].type = "obstacle"
     ag_ant2 = MockAnt(2, 0, grid2, adj_mat)
 
     lst_agants = [ag_ant0, ag_ant1, ag_ant2]
         
     GossipAndMerge(ag_ant1, lst_agants)
 
-    assert grid0[0].pheromoneLevels[0] == 0 and grid0[0].timestamp == 0
-    assert grid1[0].pheromoneLevels[0] == 100 and grid1[0].timestamp == 100
-    assert grid2[0].pheromoneLevels[0] == 100 and grid2[0].timestamp == 100
+    assert grid0[0].pheromoneLevels[0] == 0 and grid0[0].timestamp == 0 and grid0[0].type == "basic"
+    assert grid1[0].pheromoneLevels[0] == 100 and grid1[0].timestamp == 100 and grid1[0].type == "obstacle"
+    assert grid2[0].pheromoneLevels[0] == 100 and grid2[0].timestamp == 100 and grid2[0].type == "obstacle"
 
 def test_UNIT_comunication_max_distance_comunication():
     """
@@ -88,15 +89,16 @@ def test_UNIT_comunication_max_distance_comunication():
     grid2 = [placeAgent(0, ph, "basic"), placeAgent(1, ph, "basic")]
     grid2[0].pheromoneLevels = [100]
     grid2[0].timestamp = 100
+    grid2[0].type = "obstacle"
     ag_ant2 = MockAnt(2, 1, grid2, adj_mat)
 
     lst_agants = [ag_ant0, ag_ant1, ag_ant2]
         
     GossipAndMerge(ag_ant0, lst_agants)
 
-    assert grid0[0].pheromoneLevels[0] == 100 and grid0[0].timestamp == 100
-    assert grid1[0].pheromoneLevels[0] == 10 and grid1[0].timestamp == 10
-    assert grid2[0].pheromoneLevels[0] == 100 and grid2[0].timestamp == 100
+    assert grid0[0].pheromoneLevels[0] == 100 and grid0[0].timestamp == 100 and grid0[0].type == "obstacle"
+    assert grid1[0].pheromoneLevels[0] == 10 and grid1[0].timestamp == 10 and grid1[0].type == "basic"
+    assert grid2[0].pheromoneLevels[0] == 100 and grid2[0].timestamp == 100 and grid2[0].type == "obstacle"
 
 def test_UNIT_comunication_distance_threshold():
     """
@@ -120,11 +122,12 @@ def test_UNIT_comunication_distance_threshold():
     grid2 = [placeAgent(0, ph, "basic"), placeAgent(1, ph, "basic"), placeAgent(2, ph, "basic")]
     grid2[0].pheromoneLevels = [100]
     grid2[0].timestamp = 100
+    grid2[0].type = "obstacle"
     ag_ant2 = MockAnt(2, 2, grid2, adj_mat)
 
     lst_agants = [ag_ant0, ag_ant2]
         
     GossipAndMerge(ag_ant0, lst_agants)
 
-    assert grid0[0].pheromoneLevels[0] == 0 and grid0[0].timestamp == 0
-    assert grid2[0].pheromoneLevels[0] == 100 and grid2[0].timestamp == 100
+    assert grid0[0].pheromoneLevels[0] == 0 and grid0[0].timestamp == 0 and grid0[0].type == "basic"
+    assert grid2[0].pheromoneLevels[0] == 100 and grid2[0].timestamp == 100 and grid2[0].type == "obstacle"

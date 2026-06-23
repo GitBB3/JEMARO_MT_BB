@@ -4,6 +4,8 @@ def Merge(ant_ref, ant_near):
         if ant_ref.memory.grid[place].timestamp < ant_near.memory.grid[place].timestamp:
             ant_ref.memory.grid[place].pheromoneLevels = list(ant_near.memory.grid[place].pheromoneLevels)
             ant_ref.memory.grid[place].timestamp = ant_near.memory.grid[place].timestamp
+            if ant_ref.memory.grid[place].type != ant_near.memory.grid[place].type:
+                ant_ref.memory.grid[place].type = ant_near.memory.grid[place].type
 
 def GossipAndMerge(ag_ant, lst_agants):
     # Get the neighbourhood

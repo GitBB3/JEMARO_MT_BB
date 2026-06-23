@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.sparse.csgraph import dijkstra
 
 def SelectGuidance(ag_ant, neighbourhood): # neighbourhood could be computed in the function but this way we compute it only once
     """
@@ -112,7 +113,7 @@ def BalanceDirectionWithMomentum(unified_pheromone, ag_ant, neighbourhood, param
     
 
 # def PheromoneDescent(ag_ant, params, param_balance=5.5, momentum_params=[0.1,0.5]): #TODO: ag_ant is an important parameter and params should tuned then fixed. is there a better place to scale the pheromone parameters?
-def PheromoneDescent(ag_ant, params):
+def PheromoneDescent(ag_ant, params, Dist=0):
     """
     Computes the index of the placeAgent where a given AgAnt should move at next step.
 
@@ -129,7 +130,22 @@ def PheromoneDescent(ag_ant, params):
         return ag_ant.position
     else:
         guidance = SelectGuidance(ag_ant, neighbourhood) # subset of the ensemble of pheromone dynamics.
-        unified_pheromone = ag_ant.pheromone.unifyFunc(ag_ant, neighbourhood, guidance, params[:-3]) # returns a list of the values of the unified pheromone in every placeAgent of the neighbourhood, computed with the pheromones dynamics giving better guidance.
+        unified_pheromone = ag_ant.pheromone.unifyFunc(ag_ant, neighbourhood, guidance, params[:-3], Dist) # returns a list of the values of the unified pheromone in every placeAgent of the neighbourhood, computed with the pheromones dynamics giving better guidance.
         momentum_direction = BalanceDirectionWithMomentum(unified_pheromone, ag_ant, neighbourhood, params[-3], params[-2:]) # list of probabilities to go to each placeAgent of the neighbourhood.
+        id_destination = int(np.random.choice(neighbourhood, p=momentum_direction)) # choice of the next position weighted by the previous probabilities.
+        return id_destination
+
+def Ghost_PheromoneDescent(ghost, ghost_params):
+    """
+    Computes.
+    """
+    neighbourhood = [i for i in range (len(ghost.memory.adjacencyMat[ghost.position])) if ghost.memory.adjacencyMat[ghost.position][i]] # subset of the ensemble of placeAgent positions.
+    if not len(neighbourhood):
+        return ghost.position
+    else:
+        guidance = SelectGuidance(ghost, neighbourhood) # subset of the ensemble of pheromone dynamics.
+        Dist = int(dijkstra(np.array(ghost.memory.adjacencyMat), directed=False, indices=ghost.position)[ghost.nest_position])
+        unified_pheromone = ghost.pheromone.unifyFunc(ghost, neighbourhood, guidance, ghost_params[:-3], Dist) # returns a list of the values of the unified pheromone in every placeAgent of the neighbourhood, computed with the pheromones dynamics giving better guidance.
+        momentum_direction = BalanceDirectionWithMomentum(unified_pheromone, ghost, neighbourhood, ghost_params[-3], ghost_params[-2:]) # list of probabilities to go to each placeAgent of the neighbourhood.
         id_destination = int(np.random.choice(neighbourhood, p=momentum_direction)) # choice of the next position weighted by the previous probabilities.
         return id_destination

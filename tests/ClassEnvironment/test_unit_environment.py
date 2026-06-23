@@ -16,9 +16,10 @@ def test_UNIT_environment_spawn_targets_obstacles():
     lst_semantics = [["RThreat"], [0]]
     lst_diffusion = [0.3]
     lst_evaporation = [ 0.1]
-    pheromone = Pheromone(lst_semantics, lst_diffusion, lst_evaporation, id)
+    lst_types = [0]
+    pheromone = Pheromone(lst_semantics, lst_diffusion, lst_evaporation, lst_types, id)
     
-    env = Environment(adj_mat, pheromone)
+    env = Environment(adj_mat, pheromone, 0)
 
     ## Check SpawnTargets
     env.grid[0].type = "obstacle"
